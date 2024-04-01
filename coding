@@ -1,0 +1,115 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+// vector of strings for storing health information
+vector<string> healthTips;
+
+// vector of ints for storing health tips ratings
+vector<int> ratings;
+
+// stack of strings for storing recently added health tips
+stack<string> healthStack;
+
+// function to tokenize a string
+vector<string> tokenize(const string& str) {
+    vector<string> tokens;
+    string token;
+    for (char c : str) {
+        if (c == ' ') {
+            tokens.push_back(token);
+            token.clear();
+        } else {
+            token += c;
+        }
+    }
+    tokens.push_back(token);
+    return tokens;
+}
+
+// function to add a health tip to the vectors and stack
+void addHealthTip(const string& tip, int rating) {
+    healthTips.push_back(tip);
+    ratings.push_back(rating);
+
+    // add the health tip to the stack
+    healthStack.push(tip);
+}
+
+// function to display the health tips
+void displayHealthTips() {
+    cout << "Health Tips: \n";
+    for (size_t i = 0; i < healthTips.size(); ++i) {
+        cout << i + 1 << ". " << healthTips[i] << " - Rating: " << ratings[i] << "\n";
+    }
+    cout << "\n";
+}
+
+// function to search for a health tip by keyword
+void searchHealthTips(const string& keyword) {
+    vector<string> keywords = tokenize(keyword);
+
+    cout << "Search Results: \n";
+    bool found = false;
+    for (size_t i = 0; i < healthTips.size(); ++i) {
+        bool allKeywordsFound = true;
+        for (const string& k : keywords) {
+            if (healthTips[i].find(k) == string::npos) {
+                allKeywordsFound = false;
+                break;
+            }
+        }
+        if (allKeywordsFound) {
+            cout << healthTips[i] << " - Rating: " << ratings[i] << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No health tips found. \n";
+    }
+    cout << "\n";
+}
+
+int main() {
+    while (true) {
+        cout << "Menu: \n1. Add a health tip \n2. Display health tips \n3. Search for a health tip \n4. Quit \nChoose an option: ";
+        int choice;
+        cin >> choice;
+
+        if (choice == 1) {
+            cin.ignore();
+            cout << "Enter the health tip: ";
+            string tip;
+            getline(cin, tip);
+            cout << "Rate the health tip (1-5): ";
+            int rating;
+            cin >> rating;
+
+            // add the health tip to the vectors and stack
+            addHealthTip(tip, rating);
+
+            cout << "Health tip added successfully. \n\n";
+        } else if (choice == 2) {
+            displayHealthTips();
+        } else if (choice == 3) {
+            cin.ignore();
+            cout << "Enter the keyword for search: ";
+            string keyword;
+            getline(cin, keyword);
+
+            // search for the health tip by keyword
+            searchHealthTips(keyword);
+        } else if (choice == 4) {
+            cout << "Thank you for using our health tip system. \n";
+            break;
+        } else {
+            cout << "Invalid option. Please try again. \n\n";
+        }
+    }
+
+    return 0;
+}
